@@ -57,8 +57,9 @@ if ($current_blog->domain . $current_blog->path == $current_site->domain . $curr
 	add_action('admin_footer', 'global_site_search_page_setup');
 }
 
-add_action('wpmu_options', 'global_site_search_site_admin_options');
-add_action('update_wpmu_options', 'global_site_search_site_admin_options_process');
+add_action( 'wpmu_options', 'global_site_search_site_admin_options' );
+add_action( 'update_wpmu_options', 'global_site_search_site_admin_options_process' );
+add_action( 'widgets_init', 'global_site_search_load_widgets' );
 
 //add_action( 'plugins_loaded', 'global_site_search_site_load_textdomain');
 
@@ -150,7 +151,7 @@ function global_site_search_rewrite($wp_rewrite){
 	return $wp_rewrite;
 }
 
-function global_site_search_url_parse(){
+function global_site_search_url_parse() {
 	global $wpdb, $current_site, $global_site_search_base;
 	$global_site_search_url = $_SERVER['REQUEST_URI'];
 	if ( $current_site->path != '/' ) {
@@ -406,4 +407,84 @@ function global_site_search_roundup($value, $dp){
     return ceil($value*pow(10, $dp))/pow(10, $dp);
 }
 
-?>
+/**
+ * Register our widget.
+ * 
+ */
+function global_site_search_load_widgets() {
+    register_widget( 'Global_Site_Search_Widget' );
+}
+
+/**
+ * Global Site Search class.
+ * 
+ */
+class Global_Site_Search_Widget extends WP_Widget {
+  /**
+   * Widget setup.
+   */
+  function Global_Site_Search_Widget() {
+    /* Widget settings. */
+    $widget_ops = array( 'classname' => 'global-site-search', 'description' => __('Global Site Search Widget', 'globalsitesearch') );
+    
+    /* Widget control settings. */
+    $control_ops = array( 'width' => 300, 'height' => 350, 'id_base' => 'global-site-search-widget' );
+    
+    /* Create the widget. */
+    $this->WP_Widget( 'global-site-search-widget', __('Global Site Search Widget', 'globalsitesearch'), $widget_ops, $control_ops );
+  }
+  
+  /**
+   * How to display the widget on the screen.
+   */
+  function widget( $args, $instance ) {
+    extract( $args );
+    
+    /* Our variables from the widget settings. */
+    $title = apply_filters('widget_title', $instance['title'] );
+    
+    /* Before widget (defined by themes). */
+    echo $before_widget;
+    
+    /* Display the widget title if one was input (before and after defined by themes). */
+    if ( $title )
+      echo $before_title . $title . $after_title;
+    
+    $global_site_search = global_site_search_url_parse();
+    
+    echo global_site_search_search_form_output('', $global_site_search['phrase']);
+    
+    /* After widget (defined by themes). */
+    echo $after_widget;
+  }
+
+  /**
+   * Update the widget settings.
+   */
+  function update( $new_instance, $old_instance ) {
+    $instance = $old_instance;
+    
+    /* Strip tags for title and name to remove HTML (important for text inputs). */
+    $instance['title'] = strip_tags( $new_instance['title'] );
+    
+    return $instance;
+  }
+  
+  /**
+   * Displays the widget settings controls on the widget panel.
+   * Make use of the get_field_id() and get_field_name() function
+   * when creating your form elements. This handles the confusing stuff.
+   */
+  function form( $instance ) {
+    /* Set up some default widget settings. */
+    $defaults = array( 'title' => __('Global Site Search', 'globalsitesearch') );
+    $instance = wp_parse_args( (array) $instance, $defaults ); ?>
+    
+    <!-- Widget Title: Text Input -->
+    <p>
+      <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title:', 'hybrid'); ?>
+      <input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" class="widefat" /></label>
+    </p> 
+    <?php
+  }
+}
