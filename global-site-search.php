@@ -61,7 +61,7 @@ add_action( 'wpmu_options', 'global_site_search_site_admin_options' );
 add_action( 'update_wpmu_options', 'global_site_search_site_admin_options_process' );
 add_action( 'widgets_init', 'global_site_search_load_widgets' );
 
-//add_action( 'plugins_loaded', 'global_site_search_site_load_textdomain');
+add_action( 'plugins_loaded', 'global_site_search_site_load_textdomain');
 
 //------------------------------------------------------------------------//
 //---Functions------------------------------------------------------------//
@@ -81,10 +81,10 @@ function global_site_search_page_setup() {
 function global_site_search_site_load_textdomain() {
 	// Load the text-domain
 	$locale = apply_filters( 'globalsitesearch_locale', get_locale() );
-	$mofile = dirname(__FILE__) . "/languages/globalsitesearch-$locale.mo";
+	$mofile = plugin_basename(dirname(__FILE__) . "/languages/globalsitesearch-$locale.mo");
 
 	if ( file_exists( $mofile ) )
-		load_textdomain( 'globalsitesearch', $mofile );
+		load_plugin_textdomain( 'globalsitesearch', false, $mofile );
 }
 
 function global_site_search_site_admin_options() {
