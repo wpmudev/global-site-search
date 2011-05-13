@@ -4,13 +4,11 @@ Plugin Name: Global Site Search
 Plugin URI: http://premium.wpmudev.org/project/global-site-search
 Description: A magnificent plugin that allows global search across all blogs on your WordPress Multisite / BuddyPress install with ease!
 Author: Andrew Billits (Incsub)
-Version: 2.0.1
+Version: 2.1
 Author URI: http://premium.wpmudev.org
 WDP ID: 102
 Network: true
-*/
 
-/*
 Copyright 2007-2009 Incsub (http://incsub.com)
 
 This program is free software; you can redistribute it and/or modify
@@ -92,6 +90,7 @@ function global_site_search_site_admin_options() {
 	$global_site_search_background_color = get_site_option('global_site_search_background_color', '#F2F2EA');
 	$global_site_search_alternate_background_color = get_site_option('global_site_search_alternate_background_color', '#FFFFFF');
 	$global_site_search_border_color = get_site_option('global_site_search_border_color', '#CFD0CB');
+	$global_site_search_post_type = get_site_option('global_site_search_post_type', 'post');
 	?>
 		<h3><?php _e('Site Search') ?></h3>
 		<table class="form-table">
@@ -99,18 +98,17 @@ function global_site_search_site_admin_options() {
                 <th width="33%" scope="row"><?php _e('Listing Per Page', 'globalsitesearch') ?></th>
                 <td>
 				<select name="global_site_search_per_page" id="global_site_search_per_page">
-				   <option value="5" <?php if ( $global_site_search_per_page == '5' ) { echo 'selected="selected"'; } ?> ><?php _e('5', 'globalsitesearch'); ?></option>
-				   <option value="10" <?php if ( $global_site_search_per_page == '10' ) { echo 'selected="selected"'; } ?> ><?php _e('10', 'globalsitesearch'); ?></option>
-				   <option value="15" <?php if ( $global_site_search_per_page == '15' ) { echo 'selected="selected"'; } ?> ><?php _e('15', 'globalsitesearch'); ?></option>
-				   <option value="20" <?php if ( $global_site_search_per_page == '20' ) { echo 'selected="selected"'; } ?> ><?php _e('20', 'globalsitesearch'); ?></option>
-				   <option value="25" <?php if ( $global_site_search_per_page == '25' ) { echo 'selected="selected"'; } ?> ><?php _e('25', 'globalsitesearch'); ?></option>
-				   <option value="30" <?php if ( $global_site_search_per_page == '30' ) { echo 'selected="selected"'; } ?> ><?php _e('30', 'globalsitesearch'); ?></option>
-				   <option value="35" <?php if ( $global_site_search_per_page == '35' ) { echo 'selected="selected"'; } ?> ><?php _e('35', 'globalsitesearch'); ?></option>
-				   <option value="40" <?php if ( $global_site_search_per_page == '40' ) { echo 'selected="selected"'; } ?> ><?php _e('40', 'globalsitesearch'); ?></option>
-				   <option value="45" <?php if ( $global_site_search_per_page == '45' ) { echo 'selected="selected"'; } ?> ><?php _e('45', 'globalsitesearch'); ?></option>
-				   <option value="50" <?php if ( $global_site_search_per_page == '50' ) { echo 'selected="selected"'; } ?> ><?php _e('50', 'globalsitesearch'); ?></option>
-				</select>
-                <br /><?php //_e('') ?></td>
+				   <option value="5" <?php selected( $global_site_search_per_page, '5' ); ?> ><?php _e('5', 'globalsitesearch'); ?></option>
+				   <option value="10" <?php selected( $global_site_search_per_page, '10' ); ?> ><?php _e('10', 'globalsitesearch'); ?></option>
+				   <option value="15" <?php selected( $global_site_search_per_page, '15' ); ?> ><?php _e('15', 'globalsitesearch'); ?></option>
+				   <option value="20" <?php selected( $global_site_search_per_page, '20' ); ?> ><?php _e('20', 'globalsitesearch'); ?></option>
+				   <option value="25" <?php selected( $global_site_search_per_page, '25' ); ?> ><?php _e('25', 'globalsitesearch'); ?></option>
+				   <option value="30" <?php selected( $global_site_search_per_page, '30' ); ?> ><?php _e('30', 'globalsitesearch'); ?></option>
+				   <option value="35" <?php selected( $global_site_search_per_page, '35' ); ?> ><?php _e('35', 'globalsitesearch'); ?></option>
+				   <option value="40" <?php selected( $global_site_search_per_page, '40' ); ?> ><?php _e('40', 'globalsitesearch'); ?></option>
+				   <option value="45" <?php selected( $global_site_search_per_page, '45' ); ?> ><?php _e('45', 'globalsitesearch'); ?></option>
+				   <option value="50" <?php selected( $global_site_search_per_page, '50' ); ?> ><?php _e('50', 'globalsitesearch'); ?></option>
+				</select></td>
             </tr>
             <tr valign="top">
                 <th width="33%" scope="row"><?php _e('Background Color', 'globalsitesearch') ?></th>
@@ -127,8 +125,36 @@ function global_site_search_site_admin_options() {
                 <td><input name="global_site_search_border_color" type="text" id="global_site_search_border_color" value="<?php echo $global_site_search_border_color; ?>" size="20" />
                 <br /><?php _e('Default', 'globalsitesearch') ?>: #CFD0CB</td>
             </tr>
+
+			<tr valign="top">
+	                <th width="33%" scope="row"><?php _e('List Post Type', 'globalsitesearch') ?></th>
+	                <td>
+					<select name="global_site_search_post_type" id="global_site_search_post_type">
+					   <option value="all" <?php selected( $global_site_search_post_type, 'all' ); ?> ><?php _e('all', 'globalsitesearch'); ?></option>
+						<?php
+						$post_types = global_site_search_get_post_types();
+						if(!empty($post_types)) {
+							foreach($post_types as $r) {
+								?>
+								<option value="<?php echo $r; ?>" <?php selected( $global_site_search_post_type, $r ); ?> ><?php _e($r, 'globalsitesearch'); ?></option>
+								<?php
+							}
+						}
+						?>
+					</select></td>
+	        </tr>
 		</table>
 	<?php
+}
+
+function global_site_search_get_post_types() {
+	global $wpdb;
+
+	$sql = $wpdb->prepare( "SELECT post_type FROM " . $wpdb->base_prefix . "site_posts GROUP BY post_type" );
+
+	$results = $wpdb->get_col( $sql );
+
+	return $results;
 }
 
 function global_site_search_site_admin_options_process() {
@@ -137,6 +163,8 @@ function global_site_search_site_admin_options_process() {
 	update_site_option( 'global_site_search_background_color' , trim( $_POST['global_site_search_background_color'] ));
 	update_site_option( 'global_site_search_alternate_background_color' , trim( $_POST['global_site_search_alternate_background_color'] ));
 	update_site_option( 'global_site_search_border_color' , trim( $_POST['global_site_search_border_color'] ));
+	update_site_option( 'global_site_search_post_type', $_POST['global_site_search_post_type'] );
+
 }
 
 function global_site_search_rewrite($wp_rewrite){
@@ -220,6 +248,9 @@ function global_site_search_output($content) {
 		$global_site_search_background_color = get_site_option('global_site_search_background_color', '#F2F2EA');
 		$global_site_search_alternate_background_color = get_site_option('global_site_search_alternate_background_color', '#FFFFFF');
 		$global_site_search_border_color = get_site_option('global_site_search_border_color', '#CFD0CB');
+
+		$global_site_search_post_type = get_site_option('global_site_search_post_type', 'post');
+
 		$global_site_search = global_site_search_url_parse();
 		if ( $global_site_search['page_type'] == 'landing' ) {
 			//=====================================//
@@ -234,7 +265,13 @@ function global_site_search_output($content) {
 			if ( is_numeric( $author_id ) && $author_id != 0 ) {
 				$author_search = " OR post_author = '" . $author_id . "'";
 			}
-			$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $global_site_search['phrase'] . "%' OR post_content LIKE '%" . $global_site_search['phrase'] . "%'" . $author_search . " ) AND blog_public = 1 ORDER BY site_post_id DESC";
+
+			if($global_site_search_post_type == 'all') {
+				$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $global_site_search['phrase'] . "%' OR post_content LIKE '%" . $global_site_search['phrase'] . "%'" . $author_search . " ) AND blog_public = 1 ORDER BY site_post_id DESC";
+			} else {
+				$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $global_site_search['phrase'] . "%' OR post_content LIKE '%" . $global_site_search['phrase'] . "%'" . $author_search . " ) AND blog_public = 1 AND post_type = '" . $global_site_search_post_type . "' ORDER BY site_post_id DESC";
+			}
+
 			$query .= " LIMIT " . intval( $start ) . ", " . intval( $global_site_search_per_page );
 			if ( !empty( $global_site_search['phrase'] ) ) {
 				$posts = $wpdb->get_results( $query, ARRAY_A );
@@ -339,11 +376,20 @@ function global_site_search_search_form_output($content, $phrase) {
 
 function global_site_search_landing_navigation_output($content, $per_page, $page, $phrase, $next){
 	global $wpdb, $current_site, $global_site_search_base;
+
+	$global_site_search_post_type = get_site_option('global_site_search_post_type', 'post');
+
 	$author_id = $wpdb->get_var("SELECT ID FROM " . $wpdb->base_prefix . "users WHERE user_login = '" . $phrase . "'");
 	if ( is_numeric( $author_id ) && $author_id != 0 ) {
 		$author_search = " OR post_author = '" . $author_id . "'";
 	}
-	$post_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $phrase . "%' OR post_content LIKE '%" . $phrase . "%'" . $author_search . " ) AND blog_public = 1 ORDER BY site_post_id DESC");
+
+	if($global_site_search_post_type == 'all') {
+		$post_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $phrase . "%' OR post_content LIKE '%" . $phrase . "%'" . $author_search . " ) AND blog_public = 1 ORDER BY site_post_id DESC");
+	} else {
+		$post_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $phrase . "%' OR post_content LIKE '%" . $phrase . "%'" . $author_search . " ) AND blog_public = 1 AND post_type = '" . $global_site_search_post_type . "' ORDER BY site_post_id DESC");
+	}
+
 	$post_count = $post_count - 1;
 
 	//generate page div
@@ -409,7 +455,7 @@ function global_site_search_roundup($value, $dp){
 
 /**
  * Register our widget.
- * 
+ *
  */
 function global_site_search_load_widgets() {
     register_widget( 'Global_Site_Search_Widget' );
@@ -417,7 +463,7 @@ function global_site_search_load_widgets() {
 
 /**
  * Global Site Search class.
- * 
+ *
  */
 class Global_Site_Search_Widget extends WP_Widget {
   /**
@@ -426,34 +472,34 @@ class Global_Site_Search_Widget extends WP_Widget {
   function Global_Site_Search_Widget() {
     /* Widget settings. */
     $widget_ops = array( 'classname' => 'global-site-search', 'description' => __('Global Site Search Widget', 'globalsitesearch') );
-    
+
     /* Widget control settings. */
     $control_ops = array( 'width' => 300, 'height' => 350, 'id_base' => 'global-site-search-widget' );
-    
+
     /* Create the widget. */
     $this->WP_Widget( 'global-site-search-widget', __('Global Site Search Widget', 'globalsitesearch'), $widget_ops, $control_ops );
   }
-  
+
   /**
    * How to display the widget on the screen.
    */
   function widget( $args, $instance ) {
     extract( $args );
-    
+
     /* Our variables from the widget settings. */
     $title = apply_filters('widget_title', $instance['title'] );
-    
+
     /* Before widget (defined by themes). */
     echo $before_widget;
-    
+
     /* Display the widget title if one was input (before and after defined by themes). */
     if ( $title )
       echo $before_title . $title . $after_title;
-    
+
     $global_site_search = global_site_search_url_parse();
-    
+
     echo global_site_search_search_form_output('', $global_site_search['phrase']);
-    
+
     /* After widget (defined by themes). */
     echo $after_widget;
   }
@@ -463,13 +509,13 @@ class Global_Site_Search_Widget extends WP_Widget {
    */
   function update( $new_instance, $old_instance ) {
     $instance = $old_instance;
-    
+
     /* Strip tags for title and name to remove HTML (important for text inputs). */
     $instance['title'] = strip_tags( $new_instance['title'] );
-    
+
     return $instance;
   }
-  
+
   /**
    * Displays the widget settings controls on the widget panel.
    * Make use of the get_field_id() and get_field_name() function
@@ -479,12 +525,12 @@ class Global_Site_Search_Widget extends WP_Widget {
     /* Set up some default widget settings. */
     $defaults = array( 'title' => __('Global Site Search', 'globalsitesearch') );
     $instance = wp_parse_args( (array) $instance, $defaults ); ?>
-    
+
     <!-- Widget Title: Text Input -->
     <p>
       <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title:', 'hybrid'); ?>
       <input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" class="widefat" /></label>
-    </p> 
+    </p>
     <?php
   }
 }
