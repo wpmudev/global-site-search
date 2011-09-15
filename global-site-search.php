@@ -3,8 +3,8 @@
 Plugin Name: Global Site Search
 Plugin URI: http://premium.wpmudev.org/project/global-site-search
 Description: A magnificent plugin that allows global search across all blogs on your WordPress Multisite / BuddyPress install with ease!
-Author: Andrew Billits (Incsub)
-Version: 2.1
+Author: Andrew Billits (Incsub), S H Mohanjith (Incsub)
+Version: 2.0.2
 Author URI: http://premium.wpmudev.org
 WDP ID: 102
 Network: true
@@ -48,8 +48,7 @@ $global_site_search_base = 'site-search'; //domain.tld/BASE/ Ex: domain.tld/user
 
 if ($current_blog->domain . $current_blog->path == $current_site->domain . $current_site->path){
 	add_filter('generate_rewrite_rules','global_site_search_rewrite');
-	$global_site_search_wp_rewrite = new WP_Rewrite;
-	$global_site_search_wp_rewrite->flush_rules();
+	add_action('init', 'global_site_search_flush_rules');
 	add_filter('the_content', 'global_site_search_output', 20);
 	add_filter('the_title', 'global_site_search_title_output', 99, 2);
 	add_action('admin_footer', 'global_site_search_page_setup');
@@ -64,6 +63,13 @@ add_action( 'plugins_loaded', 'global_site_search_site_load_textdomain');
 //------------------------------------------------------------------------//
 //---Functions------------------------------------------------------------//
 //------------------------------------------------------------------------//
+function global_site_search_flush_rules() {
+        global $wp_rewrite;
+        if (get_option('gss_rewrite_rules_flushed', 'no') == 'no') {
+                $wp_rewrite->flush_rules();
+                update_option('gss_rewrite_rules_flushed', 'yes');
+        }
+}
 
 function global_site_search_page_setup() {
 	global $wpdb, $user_ID, $global_site_search_base;
