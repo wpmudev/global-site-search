@@ -44,21 +44,30 @@ class global_site_search {
 	//---Config---------------------------------------------------------------//
 	//------------------------------------------------------------------------//
 
+	var $db;
 	var $global_site_search_base = 'site-search'; //domain.tld/BASE/ Ex: domain.tld/user/
 
 	function __construct() {
+
+		$this->db =& $wpdb;
 
 		//------------------------------------------------------------------------//
 		//---Hook-----------------------------------------------------------------//
 		//------------------------------------------------------------------------//
 
-		if ($current_blog->domain . $current_blog->path == $current_site->domain . $current_site->path){
+		if($this->db->blogid == 1 || $this->db->blogid == 0) {
+
+			if( get_option('gss_rewrite_rules_flushed', 'no') == 'no' ) {
+				add_action( 'init', array(&$this, 'initialise_plugin') );
+			}
+
 			add_filter('generate_rewrite_rules', array(&$this, 'global_site_search_rewrite') );
-			//$global_site_search_wp_rewrite = new WP_Rewrite;
-			//$global_site_search_wp_rewrite->flush_rules();
+
 			add_filter('the_content', array(&$this, 'global_site_search_output'), 20);
 			add_filter('the_title', array(&$this, 'global_site_search_title_output'), 99, 2);
 			add_action('admin_footer', array(&$this, 'global_site_search_page_setup') );
+
+
 		}
 
 		add_action( 'wpmu_options', array(&$this, 'global_site_search_site_admin_options') );
@@ -77,12 +86,16 @@ class global_site_search {
 	//---Functions------------------------------------------------------------//
 	//------------------------------------------------------------------------//
 
+	function initialise_plugin() {
+		$this->global_site_search_flush_rules();
+	}
+
 	function global_site_search_flush_rules() {
-    global $wp_rewrite;
-    if (get_option('gss_rewrite_rules_flushed', 'no') == 'no') {
-            $wp_rewrite->flush_rules();
-            update_option('gss_rewrite_rules_flushed', 'yes');
-    }
+    	global $wp_rewrite;
+
+        $wp_rewrite->flush_rules();
+
+		update_option('gss_rewrite_rules_flushed', 'yes');
 	}
 
 	function global_site_search_page_setup() {
