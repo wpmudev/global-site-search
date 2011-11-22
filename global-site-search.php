@@ -57,7 +57,7 @@ class global_site_search {
 
 		if($this->db->blogid == 1 || $this->db->blogid == 0) {
 
-			if( get_option('gss_rewrite_rules_flushed', 'no') == 'no' ) {
+			if( get_option('gss_installed', 'no') == 'no' ) {
 				add_action( 'init', array(&$this, 'initialise_plugin') );
 			}
 
@@ -65,8 +65,6 @@ class global_site_search {
 
 			add_filter('the_content', array(&$this, 'global_site_search_output'), 20);
 			add_filter('the_title', array(&$this, 'global_site_search_title_output'), 99, 2);
-			add_action('admin_footer', array(&$this, 'global_site_search_page_setup') );
-
 
 		}
 
@@ -88,23 +86,79 @@ class global_site_search {
 
 	function initialise_plugin() {
 		$this->global_site_search_flush_rules();
+
+		$this->global_site_search_page_setup();
+
+		update_option('gss_installed', 'yes');
 	}
 
 	function global_site_search_flush_rules() {
     	global $wp_rewrite;
 
         $wp_rewrite->flush_rules();
+	}
 
-		update_option('gss_rewrite_rules_flushed', 'yes');
+	function global_site_search_rewrite($wp_rewrite){
+
+		/*
+		$propertylistpage = untrailingslashit( get_permalink( $value ) );
+										$propertylistpage = str_replace( trailingslashit( get_option('home') ), '', $propertylistpage );
+
+										$new_rules[$propertylistpage . '/page/?([0-9]{1,})/?$'] = 'index.php?namespace=staypress&paged=' . $wp_rewrite->preg_index(1) . '&type=list&pagename=' . $propertylistpage;
+										$new_rules[$propertylistpage . '$'] = 'index.php?namespace=staypress&type=list&pagename=' . $propertylistpage;
+										break;
+		*/
+
+
+		global $global_site_search_base;
+	    $global_site_search_rules = array(
+	        $global_site_search_base . '/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base,
+	        $global_site_search_base . '/([^/]+)/([^/]+)/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base,
+	        $global_site_search_base . '/([^/]+)/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base,
+	        $global_site_search_base . '/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base
+	    );
+	    $wp_rewrite->rules = $global_site_search_rules + $wp_rewrite->rules;
+		return $wp_rewrite;
 	}
 
 	function global_site_search_page_setup() {
-		global $wpdb, $user_ID, $global_site_search_base;
+		global $wpdb, $user_ID;
+
 		if ( get_site_option('global_site_search_page_setup') != 'complete' && is_site_admin() ) {
-			$page_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $wpdb->posts . " WHERE post_name = '" . $global_site_search_base . "' AND post_type = 'page'");
-			if ( $page_count < 1 ) {
-				$wpdb->query( "INSERT INTO " . $wpdb->posts . " ( post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt, post_status, comment_status, ping_status, post_password, post_name, to_ping, pinged, post_modified, post_modified_gmt, post_content_filtered, post_parent, guid, menu_order, post_type, post_mime_type, comment_count ) VALUES ( '" . $user_ID . "', '" . current_time( 'mysql' ) . "', '" . current_time( 'mysql' ) . "', '', '" . __('Site Search') . "', '', 'publish', 'closed', 'closed', '', '" . $global_site_search_base . "', '', '', '" . current_time( 'mysql' ) . "', '" . current_time( 'mysql' ) . "', '', 0, '', 0, 'page', '', 0 )" );
+
+			$page_id = get_site_option('global_site_search_page');
+			if(empty($page_id)) {
+				// a page hasn't been set - so check if there is already one with the base name
+				$page_id = $this->db->get_var("SELECT ID FROM {$this->db->posts} WHERE post_name = '" . $this->global_site_search_base . "' AND post_type = 'page'");
+				if ( empty( $page_id ) ) {
+					// Doesn't exist so create the page
+					$post = array(	"post_author"		=>	$user_ID,
+									"post_date"			=>	current_time( 'mysql' ),
+									"post_date_gmt"		=>	current_time( 'mysql' ),
+									"post_content"		=>	'',
+									"post_title"		=>	__('Site Search', 'globalsitesearch'),
+									"post_excerpt"		=>	'',
+									"post_status"		=>	'publish',
+									"comment_status"	=>	'closed',
+									"ping_status"		=>	'closed',
+									"post_password"		=>	'',
+									"post_name"			=>	$this->global_site_search_base,
+									"to_ping"			=>	'',
+									"pinged"			=>	'',
+									"post_modified"		=>	current_time( 'mysql' ),
+									"post_modified_gmt"	=>	current_time( 'mysql' ),
+									"post_content_filtered"	=>	'',
+									"post_parent"			=>	0,
+									"menu_order"			=>	0,
+									"post_type"				=>	'page',
+									"comment_count"			=>	0
+								);
+					$page_id = wp_insert_post( $post );
+
+				}
+				update_site_option( 'global_site_search_page', $page_id );
 			}
+
 			update_site_option('global_site_search_page_setup', 'complete');
 		}
 	}
@@ -198,18 +252,6 @@ class global_site_search {
 		update_site_option( 'global_site_search_border_color' , trim( $_POST['global_site_search_border_color'] ));
 		update_site_option( 'global_site_search_post_type', $_POST['global_site_search_post_type'] );
 
-	}
-
-	function global_site_search_rewrite($wp_rewrite){
-		global $global_site_search_base;
-	    $global_site_search_rules = array(
-	        $global_site_search_base . '/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base,
-	        $global_site_search_base . '/([^/]+)/([^/]+)/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base,
-	        $global_site_search_base . '/([^/]+)/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base,
-	        $global_site_search_base . '/([^/]+)/?$' => 'index.php?pagename=' . $global_site_search_base
-	    );
-	    $wp_rewrite->rules = $global_site_search_rules + $wp_rewrite->rules;
-		return $wp_rewrite;
 	}
 
 	function global_site_search_url_parse() {
