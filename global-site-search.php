@@ -37,6 +37,8 @@ class global_site_search {
 
 	function __construct() {
 
+		global $wpdb;
+
 		$this->db =& $wpdb;
 
 		//------------------------------------------------------------------------//
@@ -58,7 +60,6 @@ class global_site_search {
 
 		add_action( 'wpmu_options', array(&$this, 'global_site_search_site_admin_options') );
 		add_action( 'update_wpmu_options', array(&$this, 'global_site_search_site_admin_options_process') );
-		add_action( 'widgets_init', array(&$this, 'global_site_search_load_widgets') );
 
 		add_action( 'plugins_loaded', array(&$this, 'global_site_search_site_load_textdomain') );
 
@@ -112,7 +113,7 @@ class global_site_search {
 	function global_site_search_page_setup() {
 		global $wpdb, $user_ID;
 
-		if ( get_site_option('global_site_search_page_setup') != 'complete' && is_site_admin() ) {
+		if ( get_site_option('global_site_search_page_setup') != 'complete' && is_super_admin() ) {
 
 			$page_id = get_site_option('global_site_search_page');
 			if(empty($page_id)) {
@@ -509,28 +510,6 @@ class global_site_search {
 $global_site_search = new global_site_search();
 
 
-
-
-//------------------------------------------------------------------------//
-//---Page Output Functions------------------------------------------------//
-//------------------------------------------------------------------------//
-
-//------------------------------------------------------------------------//
-//---Support Functions----------------------------------------------------//
-//------------------------------------------------------------------------//
-
-function global_site_search_roundup($value, $dp){
-    return ceil($value*pow(10, $dp))/pow(10, $dp);
-}
-
-/**
- * Register our widget.
- *
- */
-function global_site_search_load_widgets() {
-    register_widget( 'Global_Site_Search_Widget' );
-}
-
 /**
  * Global Site Search class.
  *
@@ -566,9 +545,9 @@ class Global_Site_Search_Widget extends WP_Widget {
     if ( $title )
       echo $before_title . $title . $after_title;
 
-    $global_site_search = global_site_search_url_parse();
+    $global_site_search = $global_site_search->global_site_search_url_parse();
 
-    echo global_site_search_search_form_output('', $global_site_search['phrase']);
+    echo $global_site_search->global_site_search_search_form_output('', $global_site_search['phrase']);
 
     /* After widget (defined by themes). */
     echo $after_widget;
@@ -604,3 +583,17 @@ class Global_Site_Search_Widget extends WP_Widget {
     <?php
   }
 }
+
+function global_site_search_roundup($value, $dp){
+    return ceil($value*pow(10, $dp))/pow(10, $dp);
+}
+
+/**
+ * Register our widget.
+ *
+ */
+function global_site_search_load_widgets() {
+    register_widget( 'Global_Site_Search_Widget' );
+}
+
+add_action( 'widgets_init', 'global_site_search_load_widgets' );
