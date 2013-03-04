@@ -33,6 +33,7 @@ class global_site_search {
 	//------------------------------------------------------------------------//
 
 	var $db;
+
 	var $global_site_search_base = 'site-search'; //domain.tld/BASE/ Ex: domain.tld/user/
 
 	function __construct() {
@@ -162,6 +163,7 @@ class global_site_search {
 	}
 
 	function global_site_search_site_admin_options() {
+
 		$global_site_search_per_page = get_site_option('global_site_search_per_page', '10');
 		$global_site_search_background_color = get_site_option('global_site_search_background_color', '#F2F2EA');
 		$global_site_search_alternate_background_color = get_site_option('global_site_search_alternate_background_color', '#FFFFFF');
@@ -224,11 +226,10 @@ class global_site_search {
 	}
 
 	function global_site_search_get_post_types() {
-		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT post_type FROM " . $wpdb->base_prefix . "site_posts GROUP BY post_type" );
+		$sql = $this->db->prepare( "SELECT post_type FROM " . $this->db->base_prefix . "network_posts GROUP BY post_type" );
 
-		$results = $wpdb->get_col( $sql );
+		$results = $this->db->get_col( $sql );
 
 		return $results;
 	}
@@ -306,21 +307,26 @@ class global_site_search {
 
 	function global_site_search_title_output($title, $post_ID = '') {
 		global $wpdb, $current_site, $post, $global_site_search_base;
-		if ( $post->post_name == $global_site_search_base && $post_ID == $post->ID) {
-			$global_site_search = global_site_search_url_parse();
-			if ( $global_site_search['page_type'] == 'landing' ) {
-				if ( $global_site_search['page'] > 1 ) {
-					$title = '<a href="http://' . $current_site->domain . $current_site->path . $global_site_search_base . '/">' . __('Site Search', 'globalsitesearch') . '</a> &raquo; ' . '<a href="http://' . $current_site->domain . $current_site->path . $global_site_search_base . '/' . urlencode($global_site_search['phrase']) .  '/' . $global_site_search['page'] . '/">' . $global_site_search['page'] . '</a>';
+
+		if ( $post->post_name == $this->global_site_search_base && $post_ID == $post->ID) {
+
+			$global_site_search_content = $this->global_site_search_url_parse();
+
+			if ( $global_site_search_content['page_type'] == 'landing' ) {
+				if ( $global_site_search_content['page'] > 1 ) {
+					$title = '<a href="http://' . $current_site->domain . $current_site->path . $this->global_site_search_base . '/">' . __('Site Search', 'globalsitesearch') . '</a> &raquo; ' . '<a href="http://' . $current_site->domain . $current_site->path . $this->global_site_search_base . '/' . urlencode($global_site_search_content['phrase']) .  '/' . $global_site_search_content['page'] . '/">' . $global_site_search_content['page'] . '</a>';
 				} else {
-					$title = '<a href="http://' . $current_site->domain . $current_site->path . $global_site_search_base . '/">' . __('Site Search', 'globalsitesearch') . '</a>';
+					$title = '<a href="http://' . $current_site->domain . $current_site->path . $this->global_site_search_base . '/">' . __('Site Search', 'globalsitesearch') . '</a>';
 				}
 			}
 		}
+
 		return $title;
 	}
 
 	function global_site_search_output($content) {
 		global $wpdb, $current_site, $post, $global_site_search_base, $members_directory_base;
+
 		if ( $post->post_name == $global_site_search_base ) {
 			$global_site_search_per_page = get_site_option('global_site_search_per_page', '10');
 			$global_site_search_background_color = get_site_option('global_site_search_background_color', '#F2F2EA');
@@ -432,11 +438,13 @@ class global_site_search {
 	}
 
 	function global_site_search_search_form_output($content, $phrase) {
-		global $wpdb, $current_site, $global_site_search_base;
+
+		global $current_site, $global_site_search_base;
+
 		if ( !empty( $phrase ) ) {
-			$content .= '<form action="' . $current_site->path . $global_site_search_base . '/' . urlencode( $phrase ) . '/" method="post">';
+			$content .= '<form action="' . $current_site->path . $this->global_site_search_base . '/' . urlencode( $phrase ) . '/" method="post">';
 		} else {
-			$content .= '<form action="' . $current_site->path . $global_site_search_base . '/" method="post">';
+			$content .= '<form action="' . $current_site->path . $this->global_site_search_base . '/" method="post">';
 		}
 			$content .= '<table border="0" border="0" cellpadding="2px" cellspacing="2px" width="100%" bgcolor="">';
 			$content .= '<tr>';
