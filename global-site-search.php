@@ -244,19 +244,32 @@ class global_site_search {
 	}
 
 	function global_site_search_url_parse() {
-		global $wpdb, $current_site, $global_site_search_base;
+		global $current_site, $global_site_search_base;
+
 		$global_site_search_url = $_SERVER['REQUEST_URI'];
+
 		if ( $current_site->path != '/' ) {
 			$global_site_search_url = str_replace('/' . $current_site->path . '/', '', $global_site_search_url);
 			$global_site_search_url = str_replace($current_site->path . '/', '', $global_site_search_url);
 			$global_site_search_url = str_replace($current_site->path, '', $global_site_search_url);
 		}
+
 		$global_site_search_url = ltrim($global_site_search_url, "/");
 		$global_site_search_url = rtrim($global_site_search_url, "/");
 		$global_site_search_url = ltrim($global_site_search_url, $global_site_search_base);
 		$global_site_search_url = ltrim($global_site_search_url, "/");
 
-		list($global_site_search_1, $global_site_search_2, $global_site_search_3, $global_site_search_4) = explode("/", $global_site_search_url);
+		$gss = explode("/", $global_site_search_url);
+
+		if(is_array($gss)) {
+			switch( count($gss) ) {
+				case 4:	$global_site_search_4 = $gss[3];
+				case 3:	$global_site_search_3 = $gss[2];
+				case 2:	$global_site_search_2 = $gss[1];
+				case 1:	$global_site_search_1 = $gss[0];
+
+			}
+		}
 
 		$page_type = '';
 		$page_subtype = '';
@@ -264,15 +277,16 @@ class global_site_search {
 		$post = '';
 
 		$page_type = 'landing';
-		$phrase = $_POST['phrase'];
+		$phrase = (isset($_POST['phrase'])) ? $_POST['phrase'] : '';
+
 		if ( empty( $phrase ) ) {
-			$phrase = $global_site_search_1;
-			$page = $global_site_search_2;
+			$phrase = (!empty($global_site_search_1)) ? $global_site_search_1 : '';
+			$page = (!empty($global_site_search_2)) ? $global_site_search_2 : 1;
 			if ( empty( $page ) ) {
 				$page = 1;
 			}
 		} else {
-			$page = $global_site_search_2;
+			$page = (!empty($global_site_search_2)) ? $global_site_search_2 : 1;
 			if ( empty( $page ) ) {
 				$page = 1;
 			}
@@ -533,6 +547,9 @@ class Global_Site_Search_Widget extends WP_Widget {
    * How to display the widget on the screen.
    */
   function widget( $args, $instance ) {
+
+	global $global_site_search;
+
     extract( $args );
 
     /* Our variables from the widget settings. */
@@ -545,9 +562,9 @@ class Global_Site_Search_Widget extends WP_Widget {
     if ( $title )
       echo $before_title . $title . $after_title;
 
-    $global_site_search = $global_site_search->global_site_search_url_parse();
+    $global_site_search_content = $global_site_search->global_site_search_url_parse();
 
-    echo $global_site_search->global_site_search_search_form_output('', $global_site_search['phrase']);
+    echo $global_site_search->global_site_search_search_form_output('', $global_site_search_content['phrase']);
 
     /* After widget (defined by themes). */
     echo $after_widget;
