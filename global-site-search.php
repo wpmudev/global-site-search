@@ -328,6 +328,7 @@ class global_site_search {
 		global $wpdb, $current_site, $post, $global_site_search_base, $members_directory_base;
 
 		if ( $post->post_name == $global_site_search_base ) {
+
 			$global_site_search_per_page = get_site_option('global_site_search_per_page', '10');
 			$global_site_search_background_color = get_site_option('global_site_search_background_color', '#F2F2EA');
 			$global_site_search_alternate_background_color = get_site_option('global_site_search_alternate_background_color', '#FFFFFF');
@@ -335,40 +336,40 @@ class global_site_search {
 
 			$global_site_search_post_type = get_site_option('global_site_search_post_type', 'post');
 
-			$global_site_search = global_site_search_url_parse();
-			if ( $global_site_search['page_type'] == 'landing' ) {
+			$global_site_search_content = global_site_search_url_parse();
+			if ( $global_site_search_content['page_type'] == 'landing' ) {
 				//=====================================//
-				if ($global_site_search['page'] == 1){
+				if ($global_site_search_content['page'] == 1){
 					$start = 0;
 				} else {
-					$math = $global_site_search['page'] - 1;
+					$math = $global_site_search_content['page'] - 1;
 					$math = $global_site_search_per_page * $math;
 					$start = $math;
 				}
-				$author_id = $wpdb->get_var("SELECT ID FROM " . $wpdb->base_prefix . "users WHERE user_login = '" . $global_site_search['phrase'] . "'");
+				$author_id = $wpdb->get_var("SELECT ID FROM " . $wpdb->base_prefix . "users WHERE user_login = '" . $global_site_search_content['phrase'] . "'");
 				if ( is_numeric( $author_id ) && $author_id != 0 ) {
 					$author_search = " OR post_author = '" . $author_id . "'";
 				}
 
 				if($global_site_search_post_type == 'all') {
-					$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $global_site_search['phrase'] . "%' OR post_content LIKE '%" . $global_site_search['phrase'] . "%'" . $author_search . " ) AND blog_public = 1 ORDER BY site_post_id DESC";
+					$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $global_site_search_content['phrase'] . "%' OR post_content LIKE '%" . $global_site_search_content['phrase'] . "%'" . $author_search . " ) AND blog_public = 1 ORDER BY site_post_id DESC";
 				} else {
-					$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $global_site_search['phrase'] . "%' OR post_content LIKE '%" . $global_site_search['phrase'] . "%'" . $author_search . " ) AND blog_public = 1 AND post_type = '" . $global_site_search_post_type . "' ORDER BY site_post_id DESC";
+					$query = "SELECT * FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $global_site_search_content['phrase'] . "%' OR post_content LIKE '%" . $global_site_search_content['phrase'] . "%'" . $author_search . " ) AND blog_public = 1 AND post_type = '" . $global_site_search_post_type . "' ORDER BY site_post_id DESC";
 				}
 
 				$query .= " LIMIT " . intval( $start ) . ", " . intval( $global_site_search_per_page );
-				if ( !empty( $global_site_search['phrase'] ) ) {
+				if ( !empty( $global_site_search_content['phrase'] ) ) {
 					$posts = $wpdb->get_results( $query, ARRAY_A );
 				}
 				//=====================================//
-				$search_form_content = global_site_search_search_form_output('', $global_site_search['phrase']);
+				$search_form_content = $this->global_site_search_search_form_output('', $global_site_search_content['phrase']);
 				if ( count( $posts ) > 0 ) {
 					if ( count( $posts ) < $global_site_search_per_page ) {
 						$next = 'no';
 					} else {
 						$next = 'yes';
 					}
-					$navigation_content = global_site_search_landing_navigation_output('', $global_site_search_per_page, $global_site_search['page'], $global_site_search['phrase'], $next);
+					$navigation_content = global_site_search_landing_navigation_output('', $global_site_search_per_page, $global_site_search_content['page'], $global_site_search_content['phrase'], $next);
 				}
 				$content .= $search_form_content;
 				$content .= '<br />';
