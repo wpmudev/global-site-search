@@ -210,7 +210,7 @@ class global_site_search {
 						<select name="global_site_search_post_type" id="global_site_search_post_type">
 						   <option value="all" <?php selected( $global_site_search_post_type, 'all' ); ?> ><?php _e('all', 'globalsitesearch'); ?></option>
 							<?php
-							$post_types = global_site_search_get_post_types();
+							$post_types = $this->global_site_search_get_post_types();
 							if(!empty($post_types)) {
 								foreach($post_types as $r) {
 									?>
