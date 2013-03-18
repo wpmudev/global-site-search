@@ -48,7 +48,7 @@ class global_site_search {
 		//------------------------------------------------------------------------//
 
 		if($this->db->blogid == 1 || $this->db->blogid == 0) {
-			if( get_option('gss_installed', 0) <= $this->build || get_option('gss_installed', 0) == 'yes' ) {
+			if( get_option('gss_installed', 0) < $this->build || get_option('gss_installed', 0) == 'yes' ) {
 				add_action('init', array( &$this, 'initialise_plugin') );
 				//$this->initialise_plugin();
 			}
