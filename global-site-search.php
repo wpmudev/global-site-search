@@ -329,8 +329,6 @@ class global_site_search {
 				$parameters['s'] = $phrase;
 			}
 
-				//$network_query_posts = network_query_posts( array( 'post_type' => $posttype, 'posts_per_page' => $number, 'author' => $author ));
-
 			if($global_site_search_post_type != 'all') {
 				$parameters['post_type'] = $global_site_search_post_type;
 			}
@@ -338,8 +336,6 @@ class global_site_search {
 			// Add in the start and end numbers
 			$parameters['posts_per_page'] = intval( $global_site_search_per_page );
 			$parameters['paged'] = intval( $page );
-
-			print_r($parameters);
 
 			//=====================================//
 			$search_form_content = $this->global_site_search_search_form_output('', $phrase);
@@ -350,12 +346,10 @@ class global_site_search {
 			if(!empty($phrase)) {
 				$network_query_posts = network_query_posts( $parameters );
 
-				//print_r($GLOBALS['network_query']);
-
 				//found_posts
 				if( network_have_posts() && isset($GLOBALS['network_query']->found_posts) && $GLOBALS['network_query']->found_posts > intval( $global_site_search_per_page ) ) {
 					$next = 'yes';
-					$navigation_content = $this->global_site_search_landing_navigation_output('', $global_site_search_per_page, $page, $phrase, $next);
+					$navigation_content = $this->new_pagination( $GLOBALS['network_query'], $current_site->path . $this->global_site_search_base . '/' . urlencode($phrase) );
 				}
 
 				if ( network_have_posts() ) {
@@ -422,6 +416,37 @@ class global_site_search {
 		return $content;
 	}
 
+	function new_pagination( $wp_query, $mainlink = '' ) {
+
+		if(empty($wp_query->query_vars['paged'])) {
+			$paged = 1;
+		} else {
+			$paged = $wp_query->query_vars['paged'];
+		}
+
+		if((int) $wp_query->max_num_pages > 1) {
+
+			// we can draw the pages
+			$html = '';
+
+			$html .= "<div class='gssnav'>";
+
+			$list_navigation = paginate_links( array(
+				'base' => trailingslashit($mainlink) . '%_%',
+				'format' => 'page/%#%',
+				'total' => $wp_query->max_num_pages,
+				'current' => $paged,
+				'prev_next' => true
+			));
+
+			$html .= $list_navigation;
+
+			$html .= "</div>";
+
+			return $html;
+		}
+	}
+
 	function global_site_search_search_form_output($content, $phrase) {
 
 		global $current_site, $global_site_search_base;
@@ -438,73 +463,6 @@ class global_site_search {
 			$content .= '</tr>';
 			$content .= '</table>';
 		$content .= '</form>';
-		return $content;
-	}
-
-	function global_site_search_landing_navigation_output($content, $per_page, $page, $phrase, $next){
-		global $wpdb, $current_site, $global_site_search_base;
-
-		$global_site_search_post_type = get_site_option('global_site_search_post_type', 'post');
-
-		$author_id = $wpdb->get_var("SELECT ID FROM " . $wpdb->base_prefix . "users WHERE user_login = '" . $phrase . "'");
-		if ( is_numeric( $author_id ) && $author_id != 0 ) {
-			$author_search = " OR post_author = '" . $author_id . "'";
-		}
-
-		if($global_site_search_post_type == 'all') {
-			$post_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $phrase . "%' OR post_content LIKE '%" . $phrase . "%'" . $author_search . " ) AND blog_public = 1 ORDER BY site_post_id DESC");
-		} else {
-			$post_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $wpdb->base_prefix . "site_posts WHERE ( post_title LIKE '%" . $phrase . "%' OR post_content LIKE '%" . $phrase . "%'" . $author_search . " ) AND blog_public = 1 AND post_type = '" . $global_site_search_post_type . "' ORDER BY site_post_id DESC");
-		}
-
-		$post_count = $post_count - 1;
-
-		//generate page div
-		//============================================================================//
-		$total_pages = global_site_search_roundup($post_count / $per_page, 0);
-		$content .= '<table border="0" border="0" cellpadding="2px" cellspacing="2px" width="100%" bgcolor="">';
-		$content .= '<tr>';
-		$showing_low = ($page * $per_page) - ($per_page - 1);
-		if ($total_pages == $page){
-			//last page...
-			//$showing_high = $post_count - (($total_pages - 1) * $per_page);
-			$showing_high = $post_count;
-		} else {
-			$showing_high = $page * $per_page;
-		}
-
-	    $content .= '<td style="font-size:12px; text-align:left;" width="50%">';
-		if ($post_count > $per_page){
-		//============================================================================//
-			if ($page == '' || $page == '1'){
-				//$content .= __('Previous');
-			} else {
-			$previous_page = $page - 1;
-			$content .= '<a style="text-decoration:none;" href="http://' . $current_site->domain . $current_site->path . $global_site_search_base . '/' . urlencode( $phrase ) . '/' . $previous_page . '/">&laquo; ' . __('Previous', 'globalsitesearch') . '</a>';
-			}
-		//============================================================================//
-		}
-		$content .= '</td>';
-	    $content .= '<td style="font-size:12px; text-align:right;" width="50%">';
-		if ($post_count > $per_page){
-		//============================================================================//
-			if ( $next != 'no' ) {
-				if ($page == $total_pages){
-					//$content .= __('Next');
-				} else {
-					if ($total_pages == 1){
-						//$content .= __('Next');
-					} else {
-						$next_page = $page + 1;
-					$content .= '<a style="text-decoration:none;" href="http://' . $current_site->domain . $current_site->path . $global_site_search_base . '/' . urlencode( $phrase ) . '/' . $next_page . '/">' . __('Next', 'globalsitesearch') . ' &raquo;</a>';
-					}
-				}
-			}
-		//============================================================================//
-		}
-	    $content .= '</td>';
-		$content .= '</tr>';
-	    $content .= '</table>';
 		return $content;
 	}
 

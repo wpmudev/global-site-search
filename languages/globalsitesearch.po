@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Global Site Search 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-13 15:20+0100\n"
-"PO-Revision-Date: 2011-05-13 15:20+0100\n"
+"POT-Creation-Date: 2013-03-18 16:24+0100\n"
+"PO-Revision-Date: 2013-03-18 16:24+0100\n"
 "Last-Translator: Barry <barry@mapinated.com>\n"
 "Language-Team: Incsub <barry@incsub.com>\n"
 "MIME-Version: 1.0\n"
@@ -13,133 +13,114 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: /Users/barrygetty/Work/wordpress/plugins/global-site-search\n"
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:34
-msgid "Please install the latest version of <a href=\"http://premium.wpmudev.org/project/update-notifications/\" title=\"Download Now &raquo;\">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href=\"http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/\">More information &raquo;</a>"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:73
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:95
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:235
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:237
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:139
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:184
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:270
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:272
 msgid "Site Search"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:98
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:187
 msgid "Listing Per Page"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:101
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:190
 msgid "5"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:102
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:191
 msgid "10"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:103
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:192
 msgid "15"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:104
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:193
 msgid "20"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:105
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:194
 msgid "25"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:106
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:195
 msgid "30"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:107
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:196
 msgid "35"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:108
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:197
 msgid "40"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:109
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:198
 msgid "45"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:110
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:199
 msgid "50"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:114
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:203
 msgid "Background Color"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:116
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:121
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:126
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:205
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:210
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:215
 msgid "Default"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:119
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:208
 msgid "Alternate Background Color"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:124
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:213
 msgid "Border Color"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:130
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:219
 msgid "List Post Type"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:133
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:222
 msgid "all"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:299
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:362
 msgid "Posts"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:326
-msgid "Wrote"
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:388
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:390
+msgid " wrote"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:328
-msgid "wrote"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:331
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:394
 msgid "More"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:345
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:407
 msgid "Nothing found for search term(s)."
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:350
-msgid "Invalid page."
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:369
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:461
 msgid "Search"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:416
-msgid "Previous"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:432
-msgid "Next"
-msgstr ""
-
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:474
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:480
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:484
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:490
 msgid "Global Site Search Widget"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:526
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:547
 msgid "Global Site Search"
 msgstr ""
 
-#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:531
+#: /Users/barrygetty/Work/wordpress/plugins/global-site-search/global-site-search.php:552
 msgid "Title:"
 msgstr ""
 
