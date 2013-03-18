@@ -301,7 +301,7 @@ class global_site_search {
 			$parameters = array();
 
 			// Set the page number
-			if( !isset($wp_query->query_vars['paged']) || $wp_query->query_vars['paged'] == 1) {
+			if( !isset($wp_query->query_vars['paged']) || $wp_query->query_vars['paged'] <= 1) {
 				$page = 1;
 				$start = 0;
 			} else {
@@ -337,82 +337,85 @@ class global_site_search {
 
 			// Add in the start and end numbers
 			$parameters['posts_per_page'] = intval( $global_site_search_per_page );
-			$parameters['offset'] = intval( $start );
+			$parameters['paged'] = intval( $page );
+
+			print_r($parameters);
 
 			//=====================================//
 			$search_form_content = $this->global_site_search_search_form_output('', $phrase);
 
-			$network_query_posts = network_query_posts( $parameters );
-
-			//found_posts
-			if( network_have_posts() && isset($network_query->found_posts) && $network_query->found_posts > intval( $global_site_search_per_page ) ) {
-				$next = 'yes';
-				$navigation_content = global_site_search_landing_navigation_output('', $global_site_search_per_page, $page, $phrase, $next);
-			}
-
 			$content .= $search_form_content;
 			$content .= '<br />';
 
-			if ( network_have_posts() ) {
-				$content .= (isset($navigation_content)) ? $navigation_content : '';
+			if(!empty($phrase)) {
+				$network_query_posts = network_query_posts( $parameters );
 
-				$content .= '<div style="float:left; width:100%">';
-				$content .= '<table border="0" border="0" cellpadding="2px" cellspacing="2px" width="100%" bgcolor="">';
-				$content .= '<tr>';
-				$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px;" width="10%"> </td>';
-				$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px;" width="90%"><center><strong>' .  __('Posts', 'globalsitesearch') . '</strong></center></td>';
-				$content .= '</tr>';
+				//print_r($GLOBALS['network_query']);
 
+				//found_posts
+				if( network_have_posts() && isset($GLOBALS['network_query']->found_posts) && $GLOBALS['network_query']->found_posts > intval( $global_site_search_per_page ) ) {
+					$next = 'yes';
+					$navigation_content = $this->global_site_search_landing_navigation_output('', $global_site_search_per_page, $page, $phrase, $next);
+				}
 
+				if ( network_have_posts() ) {
+					$content .= (isset($navigation_content)) ? $navigation_content : '';
 
-				$content .= '</table>';
-				$content .= '</div>';
-				$content .= (isset($navigation_content)) ? $navigation_content : '';
-			} else {
-				$content .= '<p>';
-				$content .= '<center>';
-				$content .= __('Nothing found for search term(s).', 'globalsitesearch');
-				$content .= '</center>';
-				$content .= '</p>';
-			}
-/*
-					//=================================//
+					$content .= '<div style="float:left; width:100%">';
+					$content .= '<table border="0" border="0" width="100%" bgcolor="">';
+					$content .= '<tr>';
+					$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px;" width="10%"> </td>';
+					$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px;" width="90%"><center><strong>' .  __('Posts', 'globalsitesearch') . '</strong></center></td>';
+					$content .= '</tr>';
+
+					// Search results
+
 					$avatar_default = get_option('avatar_default');
 					$tic_toc = 'toc';
-					//=================================//
-					if ( count( $posts ) > 0 ) {
-						foreach ($posts as $post){
-							//=============================//
-							$post_author_display_name = $wpdb->get_var("SELECT display_name FROM " . $wpdb->base_prefix . "users WHERE ID = '" . $post['post_author'] . "'");
-							if ($tic_toc == 'toc'){
-								$tic_toc = 'tic';
-							} else {
-								$tic_toc = 'toc';
-							}
-							if ($tic_toc == 'tic'){
-								$bg_color = $global_site_search_alternate_background_color;
-							} else {
-								$bg_color = $global_site_search_background_color;
-							}
-							//=============================//
-							$content .= '<tr>';
-								$content .= '<td style="background-color:' . $bg_color . '; padding-top:10px;" valign="top" width="10%"><center><a style="text-decoration:none;" href="' . $post['post_permalink'] . '">' . get_avatar($post['post_author'], 32, $avatar_default) . '</a></center></td>';
-								$content .= '<td style="background-color:' . $bg_color . ';" width="90%">';
-								if ( function_exists('members_directory_site_admin_options') ) {
-									$post_author_nicename = $wpdb->get_var("SELECT user_nicename FROM " . $wpdb->base_prefix . "users WHERE ID = '" . $post['post_author'] . "'");
-									$content .= '<strong><a style="text-decoration:none;" href="http://' . $current_site->domain . $current_site->path . $members_directory_base . '/' . $post_author_nicename . '/">' . $post_author_display_name . '</a> ' . __('Wrote', 'globalsitesearch') . ': </strong> ';
-								} else {
-									$content .= '<strong' . $post_author_display_name . ' ' . __('wrote') . ': </strong> ';
-								}
-								$content .= '<strong><a style="text-decoration:none;" href="' . $post['post_permalink'] . '">' . $post['post_title'] . '</a></strong><br />';
-								$content .= substr(strip_tags($post['post_content'],'<a>'),0, 250) . ' (<a style="text-decoration:none;" href="' . $post['post_permalink'] . '">' . __('More', 'globalsitesearch') . '</a>)';
-								$content .= '</td>';
-							$content .= '</tr>';
-						}
-					}
-					//=================================//
 
-				*/
+					while( network_have_posts()) {
+						network_the_post();
+
+						//=============================//
+						$author_id = network_get_the_author_id();
+						$the_author = get_user_by( 'id', $author_id );
+
+						$post_author_display_name = $the_author->display_name;
+
+						$tic_toc = ($tic_toc == 'toc') ? 'tic' : 'toc';
+						$bg_color = ($tic_toc == 'tic') ? $global_site_search_alternate_background_color : $global_site_search_background_color;
+
+						//=============================//
+						$content .= '<tr>';
+							$content .= '<td style="background-color:' . $bg_color . '; padding-top:10px; text-align: center;" valign="top" width="10%"><a style="text-decoration:none;" href="' . network_get_permalink() . '">' . get_avatar( $author_id, 32, $avatar_default ) . '</a></td>';
+							$content .= '<td style="background-color:' . $bg_color . '; padding-top:10px; vertical-align: top;" width="90%" valign="top">';
+							if ( function_exists('members_directory_site_admin_options') ) {
+								$post_author_nicename = $the_author->user_nicename;
+								$content .= '<strong><a style="text-decoration:none;" href="http://' . $current_site->domain . $current_site->path . $members_directory_base . '/' . $post_author_nicename . '/">' . $post_author_display_name . '</a> ' . __(' wrote', 'globalsitesearch') . ': </strong> ';
+							} else {
+								$content .= '<strong>' . $post_author_display_name . __(' wrote', 'globalsitesearch') . ': </strong> ';
+							}
+							$content .= '<strong><a style="text-decoration:none;" href="' . network_get_permalink() . '">' . network_get_the_title() . '</a></strong><br />';
+							$the_content = network_get_the_content();
+							$content .= substr(strip_tags( $the_content ),0, 250) . ' (<a href="' . network_get_permalink() . '">' . __('More', 'globalsitesearch') . '</a>)';
+							$content .= '</td>';
+						$content .= '</tr>';
+
+					}
+
+
+					$content .= '</table>';
+					$content .= '</div>';
+					$content .= (isset($navigation_content)) ? $navigation_content : '';
+				} else {
+					$content .= '<p>';
+					$content .= '<center>';
+					$content .= __('Nothing found for search term(s).', 'globalsitesearch');
+					$content .= '</center>';
+					$content .= '</p>';
+				}
+
+			}
 
 		}
 
@@ -548,7 +551,7 @@ class Global_Site_Search_Widget extends WP_Widget {
     if ( $title )
       echo $before_title . $title . $after_title;
 
-    //$global_site_search_content = $global_site_search->global_site_search_url_parse();
+    $phrase = '';
 	if ( isset($wp_query->query_vars['namespace']) && $wp_query->query_vars['namespace'] == 'gss' && $wp_query->query_vars['type'] == 'search' ) {
 		$phrase = (isset($wp_query->query_vars['search'])) ? $wp_query->query_vars['search'] : '';
 		if(empty($phrase)) {
