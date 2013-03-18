@@ -238,7 +238,7 @@ class global_site_search {
 
 	function global_site_search_get_post_types() {
 
-		$sql = $this->db->prepare( "SELECT post_type FROM " . $this->db->base_prefix . "network_posts GROUP BY post_type" );
+		$sql = "SELECT post_type FROM " . $this->db->base_prefix . "network_posts GROUP BY post_type";
 
 		$results = $this->db->get_col( $sql );
 
@@ -283,8 +283,6 @@ class global_site_search {
 		global $network_query, $network_post;
 
 		global $wp_query;
-
-		//print_r($wp_query);
 
 		if ( isset($wp_query->query_vars['namespace']) && $wp_query->query_vars['namespace'] == 'gss' && $wp_query->query_vars['type'] == 'search' ) {
 
@@ -331,6 +329,9 @@ class global_site_search {
 
 			if($global_site_search_post_type != 'all') {
 				$parameters['post_type'] = $global_site_search_post_type;
+			} else {
+				$post_types = $this->global_site_search_get_post_types();
+				$parameters['post_type'] = $post_types;
 			}
 
 			// Add in the start and end numbers
