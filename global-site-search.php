@@ -4,7 +4,7 @@ Plugin Name: Global Site Search
 Plugin URI: http://premium.wpmudev.org/project/global-site-search
 Description: A magnificent plugin that allows global search across all blogs on your WordPress Multisite / BuddyPress install with ease!
 Author: Barry (Incsub)
-Version: 3.0
+Version: 3.0.1
 Author URI: http://premium.wpmudev.org
 WDP ID: 102
 Network: true
@@ -309,10 +309,10 @@ class global_site_search {
 				$start = $math;
 			}
 
-			$phrase = (isset($wp_query->query_vars['search'])) ? $wp_query->query_vars['search'] : '';
+			$phrase = (isset($wp_query->query_vars['search'])) ? urldecode($wp_query->query_vars['search']) : '';
 			if(empty($phrase)) {
 				if(isset($_POST['phrase'])) {
-					$phrase = $_POST['phrase'];
+					$phrase = urldecode($_POST['phrase']);
 				}
 			}
 
@@ -375,7 +375,11 @@ class global_site_search {
 						$author_id = network_get_the_author_id();
 						$the_author = get_user_by( 'id', $author_id );
 
-						$post_author_display_name = $the_author->display_name;
+						if(!$the_author) {
+							$post_author_display_name = __('Unknown', 'globalsitesearch');
+						} else {
+							$post_author_display_name = $the_author->display_name;
+						}
 
 						$tic_toc = ($tic_toc == 'toc') ? 'tic' : 'toc';
 						$bg_color = ($tic_toc == 'tic') ? $global_site_search_alternate_background_color : $global_site_search_background_color;
@@ -512,10 +516,10 @@ class Global_Site_Search_Widget extends WP_Widget {
 
     $phrase = '';
 	if ( isset($wp_query->query_vars['namespace']) && $wp_query->query_vars['namespace'] == 'gss' && $wp_query->query_vars['type'] == 'search' ) {
-		$phrase = (isset($wp_query->query_vars['search'])) ? $wp_query->query_vars['search'] : '';
+		$phrase = (isset($wp_query->query_vars['search'])) ? urldecode($wp_query->query_vars['search']) : '';
 		if(empty($phrase)) {
 			if(isset($_POST['phrase'])) {
-				$phrase = $_POST['phrase'];
+				$phrase = urldecode($_POST['phrase']);
 			}
 		}
 	}
