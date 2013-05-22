@@ -357,7 +357,7 @@ class global_site_search {
 					$content .= (isset($navigation_content)) ? $navigation_content : '';
 
 					$content .= '<div style="float:left; width:100%">';
-					$content .= '<table border="0" border="0" width="100%" bgcolor="">';
+					$content .= '<table border="0" width="100%" bgcolor="">';
 					$content .= '<tr>';
 					$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px;" width="10%"> </td>';
 					$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px;" width="90%"><center><strong>' .  __('Posts', 'globalsitesearch') . '</strong></center></td>';
@@ -457,13 +457,13 @@ class global_site_search {
 		global $current_site, $global_site_search_base;
 
 		$content .= '<form action="' . $current_site->path . $this->global_site_search_base . '/" method="post">';
-			$content .= '<table border="0" border="0" cellpadding="2px" cellspacing="2px" width="100%" bgcolor="">';
+			$content .= '<table border="0" cellpadding="2px" cellspacing="2px" width="100%" bgcolor="">';
 			$content .= '<tr>';
 			    $content .= '<td style="font-size:12px; text-align:left;" width="80%">';
-					$content .= '<input name="phrase" style="width: 100%;" type="text" value="' . $phrase . '">';
+					$content .= '<input name="phrase" style="width: 100%;" type="text" value="' . $phrase . '" />';
 				$content .= '</td>';
 				$content .= '<td style="font-size:12px; text-align:right;" width="20%">';
-					$content .= '<input name="Submit" value="' . __('Search', 'globalsitesearch') . '" type="submit">';
+					$content .= '<input name="Submit" value="' . __('Search', 'globalsitesearch') . '" type="submit" />';
 				$content .= '</td>';
 			$content .= '</tr>';
 			$content .= '</table>';
