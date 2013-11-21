@@ -4,7 +4,7 @@ Plugin Name: Global Site Search
 Plugin URI: http://premium.wpmudev.org/project/global-site-search
 Description: A magnificent plugin that allows global search across all blogs on your WordPress Multisite / BuddyPress install with ease!
 Author: Incsub
-Version: 3.0.1
+Version: 3.0.2
 Author URI: http://premium.wpmudev.org
 WDP ID: 102
 Network: true
