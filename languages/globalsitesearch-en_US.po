@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Global Site Search\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-21 14:48+0300\n"
+"PO-Revision-Date: 2013-11-21 14:48+0300\n"
+"Last-Translator: Eugene Manuilov <eugene@manuilov.org>\n"
+"Language-Team: Incsub <team@incsub.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-KeywordsList: esc_html__;esc_html_e;esc_attr__;__;_e;esc_attr_e;_n\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ./..\n"
+
+#: ../global-site-search.php:113 ../global-site-search.php:139
+#: ../global-site-search.php:206
+msgid "Site Search"
+msgstr "Site Search"
+
+#: ../global-site-search.php:142
+msgid "Listing Per Page"
+msgstr "Listing Per Page"
+
+#: ../global-site-search.php:152
+msgid "Background Color"
+msgstr "Background Color"
+
+#: ../global-site-search.php:155 ../global-site-search.php:162
+#: ../global-site-search.php:169
+msgid "Default"
+msgstr "Default"
+
+#: ../global-site-search.php:159
+msgid "Alternate Background Color"
+msgstr "Alternate Background Color"
+
+#: ../global-site-search.php:166
+msgid "Border Color"
+msgstr "Border Color"
+
+#: ../global-site-search.php:174
+msgid "List Post Type"
+msgstr "List Post Type"
+
+#: ../global-site-search.php:177
+msgid "all"
+msgstr "all"
+
+#: ../global-site-search.php:291
+msgid "Posts"
+msgstr "Posts"
+
+#: ../global-site-search.php:304
+msgid "Unknown"
+msgstr "Unknown"
+
+#: ../global-site-search.php:314 ../global-site-search.php:316
+msgid " wrote"
+msgstr " wrote"
+
+#: ../global-site-search.php:320
+msgid "More"
+msgstr "More"
+
+#: ../global-site-search.php:329
+msgid "Nothing found for search term(s)."
+msgstr "Nothing found for search term(s)."
+
+#: ../global-site-search.php:361
+msgid "Search"
+msgstr "Search"
+
+#: ../global-site-search.php:380 ../global-site-search.php:387
+msgid "Global Site Search Widget"
+msgstr "Global Site Search Widget"
+
+#: ../global-site-search.php:431
+msgid "Global Site Search"
+msgstr "Global Site Search"
+
+#: ../global-site-search.php:435
+msgid "Title"
+msgstr "Title"
