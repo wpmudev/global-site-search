@@ -1,0 +1,4 @@
+== 3.0.3 ==
+
+* Removed shortcodes from search results.
+* Changed submit method from POST to GET for search form.

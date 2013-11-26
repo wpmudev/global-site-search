@@ -242,8 +242,8 @@ class global_site_search {
 		}
 
 		$phrase = isset( $wp_query->query_vars['search'] ) ? urldecode( $wp_query->query_vars['search'] ) : '';
-		if ( empty( $phrase ) ) {
-			$phrase = filter_input( INPUT_POST, 'phrase' );
+		if ( empty( $phrase ) && isset( $_REQUEST['phrase'] ) ) {
+			$phrase = trim( $_REQUEST['phrase'] );
 		}
 
 		$theauthor = get_user_by( 'login', $phrase );
@@ -262,8 +262,8 @@ class global_site_search {
 			: $this->db->get_col( "SELECT post_type FROM {$this->db->base_prefix}network_posts GROUP BY post_type" );
 
 		// Add in the start and end numbers
-		$parameters['posts_per_page'] = intval( $global_site_search_per_page );
-		$parameters['paged'] = intval( $page );
+		$parameters['posts_per_page'] = absint( $global_site_search_per_page );
+		$parameters['paged'] = absint( $page );
 
 		//=====================================//
 		$search_form_content = $this->global_site_search_search_form_output( '', $phrase );
@@ -316,7 +316,7 @@ class global_site_search {
 									$content .= '<strong>' . $post_author_display_name . __( ' wrote', 'globalsitesearch' ) . ': </strong> ';
 								}
 								$content .= '<strong><a style="text-decoration:none;" href="' . network_get_permalink() . '">' . network_get_the_title() . '</a></strong><br />';
-								$the_content = network_get_the_content();
+								$the_content = preg_replace( "~(?:\[/?)[^/\]]+/?\]~s", '', network_get_the_content() );
 								$content .= substr( strip_tags( $the_content ), 0, 250 ) . ' (<a href="' . network_get_permalink() . '">' . __( 'More', 'globalsitesearch' ) . '</a>)';
 							$content .= '</td>';
 						$content .= '</tr>';
@@ -351,7 +351,7 @@ class global_site_search {
 	function global_site_search_search_form_output( $content, $phrase ) {
 		global $current_site;
 
-		$content .= '<form action="' . $current_site->path . $this->global_site_search_base . '/" method="post">';
+		$content .= '<form action="' . esc_url( trailingslashit( $current_site->path . $this->global_site_search_base ) ) . '">';
 			$content .= '<table border="0" cellpadding="2px" cellspacing="2px" width="100%" bgcolor="">';
 				$content .= '<tr>';
 					$content .= '<td style="font-size:12px; text-align:left;" width="80%">';
@@ -405,8 +405,8 @@ class Global_Site_Search_Widget extends WP_Widget {
 		if ( isset( $wp_query->query_vars['namespace'] ) && $wp_query->query_vars['namespace'] == 'gss' && $wp_query->query_vars['type'] == 'search' ) {
 			$phrase = isset( $wp_query->query_vars['search'] ) ? urldecode( $wp_query->query_vars['search'] ) : '';
 			if ( empty( $phrase ) ) {
-				if ( isset( $_POST['phrase'] ) ) {
-					$phrase = urldecode( $_POST['phrase'] );
+				if ( isset( $_REQUEST['phrase'] ) ) {
+					$phrase = urldecode( $_REQUEST['phrase'] );
 				}
 			}
 		}
@@ -447,3 +447,6 @@ add_action( 'widgets_init', 'global_site_search_load_widgets' );
 function global_site_search_load_widgets() {
     register_widget( 'Global_Site_Search_Widget' );
 }
+
+register_activation_hook( __FILE__, 'flush_rewrite_rules' );
+register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
