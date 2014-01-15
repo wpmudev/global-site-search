@@ -41,7 +41,7 @@ class global_site_search {
 
 		$this->db = $wpdb;
 
-		if ( $this->db->blogid == 1 || $this->db->blogid == 0 ) {
+		if ( in_array( get_current_blog_id(), global_site_search_get_allowed_blogs() ) ) {
 			if ( get_option( 'gss_installed', 0 ) < $this->build || get_option( 'gss_installed', 0 ) == 'yes' ) {
 				add_action( 'init', array( $this, 'initialise_plugin' ) );
 			}
@@ -62,9 +62,7 @@ class global_site_search {
 
 	function initialise_plugin() {
 		flush_rewrite_rules();
-
 		$this->global_site_search_page_setup();
-
 		update_option( 'gss_installed', $this->build );
 	}
 
@@ -93,11 +91,11 @@ class global_site_search {
 	}
 
 	function global_site_search_page_setup() {
-		if ( get_site_option( 'global_site_search_page_setup' ) == 'complete' || !is_super_admin() ) {
+		if ( get_option( 'global_site_search_page_setup' ) == 'complete' || !is_super_admin() ) {
 			return;
 		}
 
-		$page_id = get_site_option( 'global_site_search_page' );
+		$page_id = get_option( 'global_site_search_page' );
 		if ( empty( $page_id ) ) {
 			// a page hasn't been set - so check if there is already one with the base name
 			$page_id = $this->db->get_var( sprintf(
@@ -120,10 +118,10 @@ class global_site_search {
 				) );
 			}
 
-			update_site_option( 'global_site_search_page', $page_id );
+			update_option( 'global_site_search_page', $page_id );
 		}
 
-		update_site_option( 'global_site_search_page_setup', 'complete' );
+		update_option( 'global_site_search_page_setup', 'complete' );
 	}
 
 	function global_site_search_site_load_textdomain() {
@@ -371,7 +369,6 @@ class global_site_search {
 
 $global_site_search = new global_site_search();
 
-
 class Global_Site_Search_Widget extends WP_Widget {
 
 	public function __construct() {
@@ -445,7 +442,22 @@ function global_site_search_roundup( $value, $dp ) {
 
 add_action( 'widgets_init', 'global_site_search_load_widgets' );
 function global_site_search_load_widgets() {
-    register_widget( 'Global_Site_Search_Widget' );
+	if ( in_array( get_current_blog_id(), global_site_search_get_allowed_blogs() ) ) {
+		register_widget( 'Global_Site_Search_Widget' );
+	}
+}
+
+function global_site_search_get_allowed_blogs() {
+	if ( !defined( 'GLOBAL_SITE_SEARCH_BLOG' ) ) {
+		define( 'GLOBAL_SITE_SEARCH_BLOG', 1 );
+	}
+
+	$site_search_blog = GLOBAL_SITE_SEARCH_BLOG;
+	if ( is_string( $site_search_blog ) ) {
+		$site_search_blog = array_filter( array_map( 'absint', explode( ',', $site_search_blog ) ) );
+	}
+
+	return apply_filters( 'global_site_search_allowed_blogs', (array)$site_search_blog );
 }
 
 register_activation_hook( __FILE__, 'flush_rewrite_rules' );

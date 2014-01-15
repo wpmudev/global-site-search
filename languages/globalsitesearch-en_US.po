@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Global Site Search\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-21 14:48+0300\n"
-"PO-Revision-Date: 2013-11-21 14:48+0300\n"
+"POT-Creation-Date: 2014-01-15 14:14+0300\n"
+"PO-Revision-Date: 2014-01-15 14:14+0300\n"
 "Last-Translator: Eugene Manuilov <eugene@manuilov.org>\n"
 "Language-Team: Incsub <team@incsub.com>\n"
 "Language: en_US\n"
@@ -11,78 +11,81 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Poedit-KeywordsList: esc_html__;esc_html_e;esc_attr__;__;_e;esc_attr_e;_n\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c;_nc:4c,1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_ex:1,2c;"
+"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop;_nc;_nx;_nx_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ./..\n"
 
-#: ../global-site-search.php:113 ../global-site-search.php:139
-#: ../global-site-search.php:206
+#: ../global-site-search.php:111 ../global-site-search.php:137
+#: ../global-site-search.php:204
 msgid "Site Search"
 msgstr "Site Search"
 
-#: ../global-site-search.php:142
+#: ../global-site-search.php:140
 msgid "Listing Per Page"
 msgstr "Listing Per Page"
 
-#: ../global-site-search.php:152
+#: ../global-site-search.php:150
 msgid "Background Color"
 msgstr "Background Color"
 
-#: ../global-site-search.php:155 ../global-site-search.php:162
-#: ../global-site-search.php:169
+#: ../global-site-search.php:153 ../global-site-search.php:160
+#: ../global-site-search.php:167
 msgid "Default"
 msgstr "Default"
 
-#: ../global-site-search.php:159
+#: ../global-site-search.php:157
 msgid "Alternate Background Color"
 msgstr "Alternate Background Color"
 
-#: ../global-site-search.php:166
+#: ../global-site-search.php:164
 msgid "Border Color"
 msgstr "Border Color"
 
-#: ../global-site-search.php:174
+#: ../global-site-search.php:172
 msgid "List Post Type"
 msgstr "List Post Type"
 
-#: ../global-site-search.php:177
+#: ../global-site-search.php:175
 msgid "all"
 msgstr "all"
 
-#: ../global-site-search.php:291
+#: ../global-site-search.php:289
 msgid "Posts"
 msgstr "Posts"
 
-#: ../global-site-search.php:304
+#: ../global-site-search.php:302
 msgid "Unknown"
 msgstr "Unknown"
 
-#: ../global-site-search.php:314 ../global-site-search.php:316
+#: ../global-site-search.php:312 ../global-site-search.php:314
 msgid " wrote"
 msgstr " wrote"
 
-#: ../global-site-search.php:320
+#: ../global-site-search.php:318
 msgid "More"
 msgstr "More"
 
-#: ../global-site-search.php:329
+#: ../global-site-search.php:327
 msgid "Nothing found for search term(s)."
 msgstr "Nothing found for search term(s)."
 
-#: ../global-site-search.php:361
+#: ../global-site-search.php:359
 msgid "Search"
 msgstr "Search"
 
-#: ../global-site-search.php:380 ../global-site-search.php:387
+#: ../global-site-search.php:377 ../global-site-search.php:384
 msgid "Global Site Search Widget"
 msgstr "Global Site Search Widget"
 
-#: ../global-site-search.php:431
+#: ../global-site-search.php:428
 msgid "Global Site Search"
 msgstr "Global Site Search"
 
-#: ../global-site-search.php:435
+#: ../global-site-search.php:432
 msgid "Title"
 msgstr "Title"
