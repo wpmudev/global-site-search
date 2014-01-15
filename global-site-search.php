@@ -294,6 +294,7 @@ class global_site_search {
 					$avatar_default = get_option( 'avatar_default' );
 					$tic_toc = 'toc';
 
+					$substr = function_exists( 'mb_substr' ) ? 'mb_substr' : 'substr';
 					while ( network_have_posts() ) {
 						network_the_post();
 
@@ -315,7 +316,7 @@ class global_site_search {
 								}
 								$content .= '<strong><a style="text-decoration:none;" href="' . network_get_permalink() . '">' . network_get_the_title() . '</a></strong><br />';
 								$the_content = preg_replace( "~(?:\[/?)[^/\]]+/?\]~s", '', network_get_the_content() );
-								$content .= substr( strip_tags( $the_content ), 0, 250 ) . ' (<a href="' . network_get_permalink() . '">' . __( 'More', 'globalsitesearch' ) . '</a>)';
+								$content .= $substr( strip_tags( $the_content ), 0, 250 ) . ' (<a href="' . network_get_permalink() . '">' . __( 'More', 'globalsitesearch' ) . '</a>)';
 							$content .= '</td>';
 						$content .= '</tr>';
 					}

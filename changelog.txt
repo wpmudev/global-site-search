@@ -1,6 +1,7 @@
 == 3.1 ==
 
 * Implemented ability to select on which blog to show global site search.
+* Fixed content stripping issue for multi bite sites.
 
 == 3.0.3 ==
 
