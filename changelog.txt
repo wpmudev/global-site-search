@@ -1,3 +1,7 @@
+== 3.1.0.1 ==
+
+* Fixed issue with loading wrong widgets script.
+
 == 3.1 ==
 
 * Implemented ability to select on which blog to show global site search.
