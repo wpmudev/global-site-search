@@ -1,3 +1,7 @@
+== 3.2 ==
+
+* Implemented ability to override form and search result templates.
+
 == 3.1.0.1 ==
 
 * Fixed issue with loading wrong widgets script.

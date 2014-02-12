@@ -29,17 +29,7 @@ class Global_Site_Search_Widget extends WP_Widget {
 			echo $before_title . $title . $after_title;
 		}
 
-		$phrase = '';
-		if ( isset( $wp_query->query_vars['namespace'] ) && $wp_query->query_vars['namespace'] == 'gss' && $wp_query->query_vars['type'] == 'search' ) {
-			$phrase = isset( $wp_query->query_vars['search'] ) ? urldecode( $wp_query->query_vars['search'] ) : '';
-			if ( empty( $phrase ) ) {
-				if ( isset( $_REQUEST['phrase'] ) ) {
-					$phrase = urldecode( $_REQUEST['phrase'] );
-				}
-			}
-		}
-
-		echo $global_site_search->global_site_search_search_form_output( '', $phrase );
+		global_site_search_form();
 
 		/* After widget (defined by themes). */
 		echo $after_widget;

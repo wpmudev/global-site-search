@@ -3,7 +3,7 @@
 Plugin Name: Global Site Search
 Plugin URI: http://premium.wpmudev.org/project/global-site-search
 Description: A magnificent plugin that allows global search across all blogs on your WordPress Multisite / BuddyPress install with ease!
-Author: Incsub
+Author: WPMU DEV
 Version: 3.1.0.1
 Author URI: http://premium.wpmudev.org
 WDP ID: 102
@@ -28,8 +28,8 @@ Network: true
 // | MA 02110-1301 USA                                                    |
 // +----------------------------------------------------------------------+
 
-require_once dirname( __FILE__ ) . '/functions.php' ;
-require_once dirname( __FILE__ ) . '/widgets.php';
+require_once 'functions.php' ;
+require_once 'widgets.php';
 
 class global_site_search {
 
@@ -215,7 +215,7 @@ class global_site_search {
 	}
 
 	function global_site_search_output( $content ) {
-		global $current_site, $members_directory_base, $wp_query;
+		global $wp_query;
 
 		if ( !isset( $wp_query->query_vars['namespace'] ) || $wp_query->query_vars['namespace'] != 'gss' || $wp_query->query_vars['type'] != 'search' ) {
 			return $content;
@@ -224,27 +224,21 @@ class global_site_search {
 		// We are on a search results page
 
 		$global_site_search_per_page = get_site_option( 'global_site_search_per_page', '10' );
-		$global_site_search_background_color = get_site_option( 'global_site_search_background_color', '#F2F2EA' );
-		$global_site_search_alternate_background_color = get_site_option( 'global_site_search_alternate_background_color', '#FFFFFF' );
-		$global_site_search_border_color = get_site_option( 'global_site_search_border_color', '#CFD0CB' );
-
 		$global_site_search_post_type = get_site_option( 'global_site_search_post_type', 'post' );
 
 		//=====================================//
-		$parameters = array();
-
-		// Set the page number
-		if ( !isset( $wp_query->query_vars['paged'] ) || $wp_query->query_vars['paged'] <= 1 ) {
-			$page = 1;
-			$start = 0;
-		} else {
-			$page = $wp_query->query_vars['paged'];
-			$start = $global_site_search_per_page * ( $wp_query->query_vars['paged'] - 1 );
-		}
-
+		//
 		$phrase = isset( $wp_query->query_vars['search'] ) ? urldecode( $wp_query->query_vars['search'] ) : '';
 		if ( empty( $phrase ) && isset( $_REQUEST['phrase'] ) ) {
 			$phrase = trim( $_REQUEST['phrase'] );
+		}
+
+		if ( empty( $phrase ) ) {
+			ob_start();
+			global_site_search_form();
+			$content .= ob_get_clean();
+
+			return $content;
 		}
 
 		$theauthor = get_user_by( 'login', $phrase );
@@ -252,6 +246,7 @@ class global_site_search {
 			$author_id = $theauthor->ID;
 		}
 
+		$parameters = array();
 		if ( isset( $author_id ) && is_numeric( $author_id ) && $author_id != 0 ) {
 			$parameters['author'] = $author_id;
 		} else {
@@ -264,107 +259,22 @@ class global_site_search {
 
 		// Add in the start and end numbers
 		$parameters['posts_per_page'] = absint( $global_site_search_per_page );
-		$parameters['paged'] = absint( $page );
+
+		// Set the page number
+		if ( !isset( $wp_query->query_vars['paged'] ) || $wp_query->query_vars['paged'] <= 1 ) {
+			$parameters['paged'] = 1;
+			$start = 0;
+		} else {
+			$parameters['paged'] = absint( $wp_query->query_vars['paged'] );
+			$start = $global_site_search_per_page * ( $wp_query->query_vars['paged'] - 1 );
+		}
 
 		//=====================================//
-		$search_form_content = $this->global_site_search_search_form_output( '', $phrase );
 
-		$content .= $search_form_content;
-		$content .= '<br>';
-
-		if ( empty( $phrase ) ) {
-			return $content;
-		}
-
+		ob_start();
 		$network_query_posts = network_query_posts( $parameters );
-
-		//found_posts
-		if ( network_have_posts() ) {
-			$navigation_content = isset( $GLOBALS['network_query']->found_posts ) && $GLOBALS['network_query']->found_posts > intval( $global_site_search_per_page )
-				? $this->new_pagination( $GLOBALS['network_query'], $current_site->path . $this->global_site_search_base . '/' . urlencode( $phrase ) )
-				: '';
-
-			$content .= $navigation_content;
-			$content .= '<div style="float:left; width:100%">';
-				$content .= '<table border="0" width="100%" bgcolor="">';
-					$content .= '<tr>';
-						$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px;" width="10%">&nbsp;</td>';
-						$content .= '<td style="background-color:' . $global_site_search_background_color . '; border-bottom-style:solid; border-bottom-color:' . $global_site_search_border_color . '; border-bottom-width:1px; font-size:12px; text-align: ceter;" width="90%"><strong>' . __( 'Posts', 'globalsitesearch' ) . '</strong></td>';
-					$content .= '</tr>';
-
-					// Search results
-
-					$avatar_default = get_option( 'avatar_default' );
-					$tic_toc = 'toc';
-
-					$substr = function_exists( 'mb_substr' ) ? 'mb_substr' : 'substr';
-					while ( network_have_posts() ) {
-						network_the_post();
-
-						$author_id = network_get_the_author_id();
-						$the_author = get_user_by( 'id', $author_id );
-						$post_author_display_name = $the_author ? $the_author->display_name : __( 'Unknown', 'globalsitesearch' );
-
-						$tic_toc = ($tic_toc == 'toc') ? 'tic' : 'toc';
-						$bg_color = ($tic_toc == 'tic') ? $global_site_search_alternate_background_color : $global_site_search_background_color;
-
-						$content .= '<tr>';
-							$content .= '<td style="background-color:' . $bg_color . '; padding-top:10px; text-align: center;" valign="top" width="10%"><a style="text-decoration:none;" href="' . network_get_permalink() . '">' . get_avatar( $author_id, 32, $avatar_default ) . '</a></td>';
-							$content .= '<td style="background-color:' . $bg_color . '; padding-top:10px; vertical-align: top; text-align: left;" width="90%" valign="top">';
-								if ( function_exists( 'members_directory_site_admin_options' ) ) {
-									$post_author_nicename = $the_author->user_nicename;
-									$content .= '<strong><a style="text-decoration:none;" href="http://' . $current_site->domain . $current_site->path . $members_directory_base . '/' . $post_author_nicename . '/">' . $post_author_display_name . '</a> ' . __( ' wrote', 'globalsitesearch' ) . ': </strong> ';
-								} else {
-									$content .= '<strong>' . $post_author_display_name . __( ' wrote', 'globalsitesearch' ) . ': </strong> ';
-								}
-								$content .= '<strong><a style="text-decoration:none;" href="' . network_get_permalink() . '">' . network_get_the_title() . '</a></strong><br />';
-								$the_content = preg_replace( "~(?:\[/?)[^/\]]+/?\]~s", '', network_get_the_content() );
-								$content .= $substr( strip_tags( $the_content ), 0, 250 ) . ' (<a href="' . network_get_permalink() . '">' . __( 'More', 'globalsitesearch' ) . '</a>)';
-							$content .= '</td>';
-						$content .= '</tr>';
-					}
-
-				$content .= '</table>';
-			$content .= '</div>';
-			$content .= $navigation_content;
-		} else {
-			$content .= '<p style="text-align:center">' . __( 'Nothing found for search term(s).', 'globalsitesearch' ) . '</p>';
-		}
-
-		return $content;
-	}
-
-	function new_pagination( $wp_query, $mainlink = '' ) {
-		$html = '';
-
-		if ( (int)$wp_query->max_num_pages > 1 ) {
-			$html = '<div class="gssnav">' . paginate_links( array(
-				'base'      => trailingslashit( $mainlink ) . '%_%',
-				'format'    => 'page/%#%',
-				'total'     => $wp_query->max_num_pages,
-				'current'   => !empty( $wp_query->query_vars['paged'] ) ? $wp_query->query_vars['paged'] : 1,
-				'prev_next' => true,
-			) ) . '</div>';
-		}
-
-		return $html;
-	}
-
-	function global_site_search_search_form_output( $content, $phrase ) {
-		global $current_site;
-
-		$content .= '<form action="' . esc_url( trailingslashit( $current_site->path . $this->global_site_search_base ) ) . '">';
-			$content .= '<table border="0" cellpadding="2px" cellspacing="2px" width="100%" bgcolor="">';
-				$content .= '<tr>';
-					$content .= '<td style="font-size:12px; text-align:left;" width="80%">';
-						$content .= '<input type="text" name="phrase" style="width: 100%;" value="' . esc_attr( stripslashes( $phrase ) ) . '">';
-					$content .= '</td>';
-					$content .= '<td style="font-size:12px; text-align:right;" width="20%">';
-						$content .= '<input type="submit" value="' . __( 'Search', 'globalsitesearch' ) . '">';
-					$content .= '</td>';
-				$content .= '</tr>';
-			$content .= '</table>';
-		$content .= '</form>';
+		include global_site_search_locate_template( 'global-site-search.php' );
+		$content .= ob_get_clean();
 
 		return $content;
 	}
