@@ -28,8 +28,9 @@ Network: true
 // | MA 02110-1301 USA                                                    |
 // +----------------------------------------------------------------------+
 
-require_once 'functions.php' ;
-require_once 'widgets.php';
+// do not remove dirname( __FILE__ ) because it could case to loading wrong file
+require_once dirname( __FILE__ ) . '/functions.php' ;
+require_once dirname( __FILE__ ) . '/widgets.php';
 
 class global_site_search {
 
