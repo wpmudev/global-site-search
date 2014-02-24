@@ -34,8 +34,7 @@ require_once dirname( __FILE__ ) . '/widgets.php';
 
 class global_site_search {
 
-	var $build = 4;
-
+	/** @var wpdb */
 	var $db;
 
 	var $global_site_search_base = 'site-search'; //domain.tld/BASE/ Ex: domain.tld/user/
@@ -46,9 +45,7 @@ class global_site_search {
 		$this->db = $wpdb;
 
 		if ( in_array( get_current_blog_id(), global_site_search_get_allowed_blogs() ) ) {
-			if ( get_option( 'gss_installed', 0 ) < $this->build || get_option( 'gss_installed', 0 ) == 'yes' ) {
-				add_action( 'init', array( $this, 'initialise_plugin' ) );
-			}
+			add_action( 'init', array( $this, 'global_site_search_page_setup' ) );
 
 			// Add the rewrites
 			add_action( 'generate_rewrite_rules', array( $this, 'add_rewrite' ) );
@@ -62,12 +59,6 @@ class global_site_search {
 		add_action( 'update_wpmu_options', array( $this, 'global_site_search_site_admin_options_process' ) );
 
 		add_action( 'plugins_loaded', array( $this, 'global_site_search_site_load_textdomain' ) );
-	}
-
-	function initialise_plugin() {
-		flush_rewrite_rules();
-		$this->global_site_search_page_setup();
-		update_option( 'gss_installed', $this->build );
 	}
 
 	function add_queryvars( $vars ) {
@@ -95,17 +86,12 @@ class global_site_search {
 	}
 
 	function global_site_search_page_setup() {
-		if ( get_option( 'global_site_search_page_setup' ) == 'complete' || !is_super_admin() ) {
-			return;
-		}
-
-		$page_id = get_option( 'global_site_search_page' );
-		if ( empty( $page_id ) ) {
+		$page_id = get_option( 'global_site_search_page', false );
+		if ( empty( $page_id ) || !is_object( get_post( $page_id ) ) && is_super_admin() ) {
 			// a page hasn't been set - so check if there is already one with the base name
-			$page_id = $this->db->get_var( sprintf(
-				"SELECT ID FROM %s WHERE post_name = '%s' AND post_type = 'page'",
-				$this->db->posts,
-				esc_sql( $this->global_site_search_base )
+			$page_id = $this->db->get_var( $this->db->prepare(
+				"SELECT ID FROM {$this->db->posts} WHERE post_name = %s AND post_type = 'page'",
+				$this->global_site_search_base
 			) );
 
 			if ( empty( $page_id ) ) {
@@ -120,12 +106,12 @@ class global_site_search {
 					"post_name"      => $this->global_site_search_base,
 					"post_type"      => 'page',
 				) );
+
+				flush_rewrite_rules();
 			}
 
 			update_option( 'global_site_search_page', $page_id );
 		}
-
-		update_option( 'global_site_search_page_setup', 'complete' );
 	}
 
 	function global_site_search_site_load_textdomain() {

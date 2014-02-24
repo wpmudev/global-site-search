@@ -1,6 +1,8 @@
 == 3.2 ==
 
 * Implemented ability to override form and search result templates.
+* Fixed issue with search form submission issue when global site search is located at sub-site
+* Fixed search page auto creation issue
 
 == 3.1.0.1 ==
 
