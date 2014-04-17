@@ -1,3 +1,6 @@
+== 3.2.1 ==
+* Corrected reported issue to stripslashes on search phrase in pager links
+
 == 3.2 ==
 
 * Implemented ability to override form and search result templates.

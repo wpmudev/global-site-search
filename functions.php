@@ -47,9 +47,8 @@ function global_site_search_get_phrase() {
 
 	$phrase = isset( $wp_query->query_vars['search'] ) ? urldecode( $wp_query->query_vars['search'] ) : '';
 	if ( empty( $phrase ) && isset( $_REQUEST['phrase'] ) ) {
-		$phrase = trim( $_REQUEST['phrase'] );
+		$phrase = trim( stripslashes($_REQUEST['phrase'] ));
 	}
-
 	return $phrase;
 }
 
