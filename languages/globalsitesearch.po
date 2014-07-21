@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Global Site Search\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-12 14:22+0300\n"
-"PO-Revision-Date: 2014-02-12 14:22+0300\n"
+"POT-Creation-Date: 2014-07-21 22:40+0530\n"
+"PO-Revision-Date: 2014-07-21 22:41+0530\n"
 "Last-Translator: Eugene Manuilov <eugene@manuilov.org>\n"
 "Language-Team: Incsub <team@incsub.com>\n"
 "Language: en_US\n"
@@ -22,71 +22,71 @@ msgstr ""
 
 #: ../widgets.php:8 ../widgets.php:15
 msgid "Global Site Search Widget"
-msgstr "Global Site Search Widget"
+msgstr ""
 
 #: ../widgets.php:49
 msgid "Global Site Search"
-msgstr "Global Site Search"
+msgstr ""
 
 #: ../widgets.php:53
 msgid "Title"
-msgstr "Title"
+msgstr ""
 
-#: ../global-site-search.php:114 ../global-site-search.php:140
-#: ../global-site-search.php:207
+#: ../global-site-search.php:101 ../global-site-search.php:127
+#: ../global-site-search.php:194
 msgid "Site Search"
-msgstr "Site Search"
+msgstr ""
 
-#: ../global-site-search.php:143
+#: ../global-site-search.php:130
 msgid "Listing Per Page"
-msgstr "Listing Per Page"
+msgstr ""
 
-#: ../global-site-search.php:153
+#: ../global-site-search.php:140
 msgid "Background Color"
-msgstr "Background Color"
+msgstr ""
 
-#: ../global-site-search.php:156 ../global-site-search.php:163
-#: ../global-site-search.php:170
+#: ../global-site-search.php:143 ../global-site-search.php:150
+#: ../global-site-search.php:157
 msgid "Default"
-msgstr "Default"
+msgstr ""
 
-#: ../global-site-search.php:160
+#: ../global-site-search.php:147
 msgid "Alternate Background Color"
-msgstr "Alternate Background Color"
+msgstr ""
 
-#: ../global-site-search.php:167
+#: ../global-site-search.php:154
 msgid "Border Color"
-msgstr "Border Color"
+msgstr ""
 
-#: ../global-site-search.php:175
+#: ../global-site-search.php:162
 msgid "List Post Type"
-msgstr "List Post Type"
+msgstr ""
 
-#: ../global-site-search.php:178
+#: ../global-site-search.php:165
 msgid "all"
-msgstr "all"
-
-#: ../templates/global-site-search-form.php:9
-msgid "Search"
-msgstr "Search"
+msgstr ""
 
 #: ../templates/global-site-search.php:39
 msgid "Posts"
-msgstr "Posts"
+msgstr ""
 
 #: ../templates/global-site-search.php:49
 msgid "Unknown"
-msgstr "Unknown"
+msgstr ""
 
 #: ../templates/global-site-search.php:61
 #: ../templates/global-site-search.php:64
 msgid "wrote"
-msgstr "Site Search"
+msgstr ""
 
 #: ../templates/global-site-search.php:71
 msgid "More"
-msgstr "More"
+msgstr ""
 
 #: ../templates/global-site-search.php:80
 msgid "Nothing found for search term(s)."
-msgstr "Nothing found for search term(s)."
+msgstr ""
+
+#: ../templates/global-site-search-form.php:9
+msgid "Search"
+msgstr ""
