@@ -1,3 +1,6 @@
+== 3.2.2 ==
+* Fixed .po files for translations
+
 == 3.2.1 ==
 * Corrected reported issue to stripslashes on search phrase in pager links
 
