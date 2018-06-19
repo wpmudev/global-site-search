@@ -94,8 +94,6 @@ If you prefer to display the site search form and results on a sub-site in your 
 
 Remember to change the number to the ID of your sub-site. Note that this will also make the Site Search widget available on that sub-site.
 
-We hope you enjoy using Global Site Search. If you have any issues with use or configuration, or have a feature request, please drop by our [community forums][49] where support staff and other members are standing by to lend a hand.
-
 [38]: https://premium.wpmudev.org/wp-content/uploads/2009/09/searchfunction1.jpg
 [39]: https://premium.wpmudev.org/wp-content/uploads/2009/09/sitesearch.png
 [40]: https://premium.wpmudev.org/wpmu-manual/installing-regular-plugins-on-wpmu/
